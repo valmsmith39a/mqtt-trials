@@ -1,5 +1,20 @@
 var app = angular.module('mqttTrials');
 
+var data = [
+  {
+    key: 'sample_1',
+    values:[1, 2, 3, 4, 5]
+  },
+  {
+    key: 'sample_2',
+    values: {
+      a: 1,
+      b: 2,
+      c: 3
+    }
+  }
+];
+
 app.controller('mainCtrl', function($scope) {
 
   /*
@@ -29,7 +44,7 @@ app.controller('mainCtrl', function($scope) {
     /* when client is connected to broker, create a subscription. client publishes messages to /World and can also get messages from /World */
     client.subscribe('/World');
 
-    var message = new Paho.MQTT.Message('hello');
+    var message = new Paho.MQTT.Message(JSON.stringify(data));
 
     message.destinationName = '/World';
     client.send(message);
@@ -43,6 +58,37 @@ app.controller('mainCtrl', function($scope) {
 
   function onMessageArrived(message) {
     console.log('onMessageArrived: ' + message.payloadString);
+    var dataObj = JSON.parse(message.payloadString);
+    //
+    // nv.addGraph(function() {
+    //   var chart = nv.models.discreteBarChart()
+    //               .x(d => d.label)
+    //               .y(d => d.value)
+    //               ;
+    //
+    //   d3.select('#chart svg')
+    //     .datum(dataObj)
+    //     .call(chart);
+    //
+    //   return chart;
+    // });
+    // createDataVisualization(message.payloadString);
   }
-  
+
+  function createDataVisualization(data) {
+    var dataObj = JSON.parse(data);
+
+    nv.addGraph(function() {
+      var chart = nv.models.discreteBarChart()
+                  .x(d => d.label)
+                  .y(d => d.value)
+                  ;
+
+      d3.select('#chart svg')
+        .datum(dataObj)
+        .call(chart);
+
+      return chart;
+    });
+  }
 });
