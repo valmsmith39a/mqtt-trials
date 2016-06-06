@@ -1,6 +1,7 @@
-var app = angular.module('mqttTrials',[]);
+var app = angular.module('mqttTrials',['ui.router']);
 
-// app.run(function(mainCtrl) {
-//   console.log('in app.run');
-//   // mainCtrl.test();
-// })
+app.config(function($stateProvider, $urlRouterProvider) {
+  $stateProvider
+  .state('mainCtrl', {url:'/', templateUrl:'dashboard.html', controller:'mainCtrl'})
+  $urlRouterProvider.otherwise('/');
+})
